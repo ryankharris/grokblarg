@@ -57,3 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# posts directory where user places their source markdown
+/posts
