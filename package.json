@@ -1,0 +1,23 @@
+{
+  "name": "grokblarg",
+  "version": "0.1.0",
+  "description": "Grokblarg is a static-blog-site generator",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryankharris/grokblarg.git"
+  },
+  "keywords": [
+    "blog",
+    "static"
+  ],
+  "author": "Ryan K. Harris",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryankharris/grokblarg/issues"
+  },
+  "homepage": "https://github.com/ryankharris/grokblarg#readme"
+}
