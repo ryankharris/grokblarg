@@ -59,3 +59,9 @@ typings/
 
 # posts directory where user places their source markdown
 /posts
+
+# scratch directory where I want to throw stuff locally that I never want in the repo
+/scratch
+
+# don't include the grokblarg.json config file, as that is customized
+grokblarg.json
