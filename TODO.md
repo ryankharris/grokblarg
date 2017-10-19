@@ -1,15 +1,20 @@
 Grokblarg TODO list
 
+- [ ] Add -u refresh 'updated' date metadata for a post. Pull defaults from config
 - [ ] Main-page displays a # of posts in chronological (newest to oldest) order
 - [ ] Menu page provides an index of all posts (table of contents), keyword-filter, and text-search
 - [ ] If indicated output directory doesn't exist, create it as part of generateStaticContent
 - [ ] Fill out README
+- [ ] Consolidate file-io to a few functions, to reduce side-effects, in order to improve testability
 - [ ] Make use of path.sep in all path-related code to make it OS agnostic
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
 - [ ] Layout should be mobile-friendly
 - [ ] Have the generateStaticContent function make use of config data
-- [ ] CLI command to create a new post: would handle meta-data creation like date format
-- [ ] Determine if 'Version' in post meta-data should be simple int or semantic-version
+- [x] Add -c create post command. Pull defaults from config
+- [x] Verify grokblarg tests that posts/ exists and notifies the user otherwise.
+- [x] Determine if 'Version' in post meta-data should be simple int or semantic-version. (semantic-version)
+- [x] Verify writeExamplePost makes use of config.
+- [x] Verify -o path args are normalized and folder separator is appended
 - [x] Implement basic conversion .md -> .html
 - [x] Implement meta-data extraction: build toc and keyword-map
 - [x] Move markdown-metadata parsing to separate lib: js-parse-markdown-metadata
