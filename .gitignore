@@ -65,3 +65,6 @@ typings/
 
 # don't include the grokblarg.json config file, as that is customized
 grokblarg.json
+
+# output (default) directory where grokblarg puts generated static content
+/output

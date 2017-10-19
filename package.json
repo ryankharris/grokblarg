@@ -2,10 +2,12 @@
   "name": "grokblarg",
   "version": "0.1.0",
   "description": "Grokblarg is a static-blog-site generator",
-  "main": "app.js",
+  "main": "app/grokblarg.js",
   "scripts": {
     "jasmine": "jasmine",
-    "test": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
+    "jasmine-config": "jasmine JASMINE_CONFIG_PATH=test/unit/jasmine.json",
+    "start": "node ./app/grokblarg.js",
+    "test": "NODE_ENV=test jasmine JASMINE_CONFIG_PATH=test/unit/jasmine.json"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,8 @@
     "jasmine": "^2.7.0"
   },
   "dependencies": {
-    "commander": "^2.11.0"
+    "commander": "^2.11.0",
+    "js-parse-markdown-metadata": "^1.0.1",
+    "marky-markdown": "^11.3.2"
   }
 }

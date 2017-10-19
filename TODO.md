@@ -1,17 +1,18 @@
 Grokblarg TODO list
 
+- [ ] Main-page displays a # of posts in chronological (newest to oldest) order
+- [ ] Menu page provides an index of all posts (table of contents), keyword-filter, and text-search
+- [ ] If indicated output directory doesn't exist, create it as part of generateStaticContent
 - [ ] Fill out README
 - [ ] Make use of path.sep in all path-related code to make it OS agnostic
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
 - [ ] Layout should be mobile-friendly
-- [ ] Main-page displays a # of posts in chronological (newest to oldest) order
-- [ ] Menu page provides an index of all posts (table of contents), keyword-filter, and text-search
 - [ ] Have the generateStaticContent function make use of config data
 - [ ] CLI command to create a new post: would handle meta-data creation like date format
-- [ ] Implement meta-data extraction: build toc and keyword-map
 - [ ] Determine if 'Version' in post meta-data should be simple int or semantic-version
-- [ ] Implement basic conversion .md -> .html
-- [ ] If indicated output directory doesn't exist, create it as part of generateStaticContent
+- [x] Implement basic conversion .md -> .html
+- [x] Implement meta-data extraction: build toc and keyword-map
+- [x] Move markdown-metadata parsing to separate lib: js-parse-markdown-metadata
 - [x] Implement cli -i option: creates 'posts' and grokblarg.json with initial examples
 - [x] Get option parsing lib: Commander
 - [x] Add Jasmine for unit-tests
