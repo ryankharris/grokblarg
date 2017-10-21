@@ -4,18 +4,15 @@ grokblarg is a static-blog-content generator.
 The intent of the author is to use the generated content with github pages, similar in concept to Jekyll, but much simpler. You can obviously use the generated content for whatever you wish.
 
 ## Basic usage
-* Install Node.js configure on your PATH.
+Install Node.js configure on your PATH.
 
-* Clone or download grokblarg. Within the cloned folder, run:
-
+Clone or download grokblarg. Within the cloned folder, run:
 
     node app/grokblarg.js -i
 
-
 That will create the `grokblarg.json` config file and the defaultSourcePath `posts/` if they don't already exist, and write an examplePost.md to the `posts/` folder.
 
-* Now run the generation process with:
-
+Now run the generation process with:
 
     node app/grokblarg.js
 
@@ -61,17 +58,16 @@ Generate a new post template file in the default source path. The `--create` req
 ## Advanced usage
 Having followed the 'Basic usage' instructions above, let me explain my grokblarg process in greater detail.
 
-- Opening the `grokblarg.json` config, you will the following:
-
+Opening the `grokblarg.json` config, you will the following:
 
     "author": "Your Name Here",
     "blogName": "My grokblarg Blog",
     "defaultOutputPath": "./output/",
     "defaultSourcePath": "./posts/"
 
-- Alter the `author` and `blogName` accordingly. `blogName` is used to generate the title of your blog in the index.html output.
-- Alter the defaultSourcePath and defaultOutputPath to your desired locations, and preferably use absolute paths to avoid having to troubleshoot any strange behavior on your system. My config might look like:
+Alter the `author` and `blogName` accordingly. `blogName` is used to generate the title of your blog in the index.html output.
 
+Alter the defaultSourcePath and defaultOutputPath to your desired locations, and preferably use absolute paths to avoid having to troubleshoot any strange behavior on your system. My config might look like:
 
     "author": "Ryan K Harris",
     "blogName": "Ryan's Blog",
@@ -80,13 +76,11 @@ Having followed the 'Basic usage' instructions above, let me explain my grokblar
 
 In my case, both local paths to ryankharris.github.io and sourceRepo are local clones of repos. This is so that when I add new post content to my local sourceRepo, I can commit and push to the remote. When I generate new static-blog-content using grokblarg, it is written to my local ryankharris.github.io clone, and I can again, commit and push to the remote, which will update the github pages.
 
-- Now create a new source post with:
-
+Now create a new source post with:
 
     node app/grokblarg.js -c "newPost" -t "My new post"
 
 Now open that post file `newPost.md` in an editor, and you will see something similar to:
-
 
     <!-- @meta
     Title: My new post
@@ -103,7 +97,7 @@ Now open that post file `newPost.md` in an editor, and you will see something si
 
 Now, edit to your heart's content. grokblarg makes use of [marky-markdown](https://www.npmjs.com/package/marky-markdown "marky-markdown") for converting markdown to html, so refer to that page for allowed features and syntax.
 
-- Generate your output with:
+Generate your output with:
 
     node app/grokblarg.js
 
