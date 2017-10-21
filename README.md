@@ -1,4 +1,5 @@
 # grokblarg
+
 grokblarg is a static-blog-content generator.
 
 The intent of the author is to use the generated content with github pages, similar in concept to Jekyll, but much simpler. You can obviously use the generated content for whatever you wish.
@@ -124,3 +125,4 @@ Feel free to alter your title, updated date, and add keywords as you wish. New m
 `npm t -s`  
 `npm run jasmine test/unit/*`  
 `npm run jasmine test/unit/<file-name>`  
+
