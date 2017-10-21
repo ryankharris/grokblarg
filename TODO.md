@@ -1,6 +1,6 @@
 # Grokblarg TODO list
 
-- [ ] Fill out README
+- [ ] Verify that -s combined with -c emits a warning if the provide sourcePath doesn't exist
 - [ ] Revise parseKeywords() to support info the keywords.html page needs, i.e map of post entries, not just filenames
 - [ ] Develop keywords.html page, add Keyword into top-level-nav
 - [ ] Develop search.html page, add Search into top-level-nav
@@ -10,6 +10,7 @@
 - [ ] Make use of path.sep in all path-related code to make it OS agnostic
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
 - [ ] Layout should be mobile-friendly
+- [x] Fill out README
 - [x] Add config property 'defaultSourcePath' for --source option
 - [x] Add --source option allowing user to enter a source directory path
 - [x] generation process should empty the targetPath first (no, because their are other hosting files in there)

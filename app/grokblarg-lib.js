@@ -568,14 +568,19 @@ function generateStaticContent (sourcePath, targetPath) {
         return
       }
 
-      if (files.length === 0) {
+      // filter out non-.md files
+      let filteredFiles = files.filter(fileName => {
+        return path.extname(fileName) === '.md'
+      })
+
+      if (filteredFiles.length === 0) {
         console.log(sourcePath + ' does not contain any posts. Exiting.')
         return
       }
 
       console.log(`generating static-content in: ${targetPath}`)
       // collect promises to parse each source file
-      promises = files.map(boundParseSourceMarkdown)
+      promises = filteredFiles.map(boundParseSourceMarkdown)
       Promise.all(promises).then(success, failure)
     })
 
