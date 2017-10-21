@@ -5,6 +5,7 @@ grokblarg is a static-blog-content generator.
 The intent of the author is to use the generated content with github pages, similar in concept to Jekyll, but much simpler. You can obviously use the generated content for whatever you wish.
 
 ## Basic usage
+
 Install Node.js configure on your PATH.
 
 Clone or download grokblarg. Within the cloned folder, run:
@@ -14,6 +15,7 @@ Clone or download grokblarg. Within the cloned folder, run:
 That will create the `grokblarg.json` config file and the defaultSourcePath `posts/` if they don't already exist, and write an examplePost.md to the `posts/` folder.
 
 Now run the generation process with:
+
 
     node app/grokblarg.js
 
@@ -60,6 +62,7 @@ Generate a new post template file in the default source path. The `--create` req
 Having followed the 'Basic usage' instructions above, let me explain my grokblarg process in greater detail.
 
 Opening the `grokblarg.json` config, you will the following:
+
 
     "author": "Your Name Here",
     "blogName": "My grokblarg Blog",
