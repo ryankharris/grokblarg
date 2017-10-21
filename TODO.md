@@ -1,15 +1,23 @@
-Grokblarg TODO list
+# Grokblarg TODO list
 
-- [ ] Add -u refresh 'updated' date metadata for a post. Pull defaults from config
-- [ ] Main-page displays a # of posts in chronological (newest to oldest) order
-- [ ] Menu page provides an index of all posts (table of contents), keyword-filter, and text-search
-- [ ] If indicated output directory doesn't exist, create it as part of generateStaticContent
 - [ ] Fill out README
+- [ ] Revise parseKeywords() to support info the keywords.html page needs, i.e map of post entries, not just filenames
+- [ ] Develop keywords.html page, add Keyword into top-level-nav
+- [ ] Develop search.html page, add Search into top-level-nav
+- [ ] refactor so that grokblarg config and the version info are only loaded once during execution
+- [ ] Add -u refresh 'updated' date metadata for a post. Pull defaults from config
 - [ ] Consolidate file-io to a few functions, to reduce side-effects, in order to improve testability
 - [ ] Make use of path.sep in all path-related code to make it OS agnostic
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
 - [ ] Layout should be mobile-friendly
-- [ ] Have the generateStaticContent function make use of config data
+- [x] Add config property 'defaultSourcePath' for --source option
+- [x] Add --source option allowing user to enter a source directory path
+- [x] generation process should empty the targetPath first (no, because their are other hosting files in there)
+- [x] If indicated output directory doesn't exist, create it as part of generateStaticContent
+- [x] Add config property 'defaultOutputPath' and have grokblarg use that for default -o targetPath
+- [x] Have the generateStaticContent function make use of config data
+- [x] Make generated .html posts include the top menu, generated title, and dates in content
+- [x] Main-page (index.html) displays posts in chronological (newest to oldest) order
 - [x] Add -c create post command. Pull defaults from config
 - [x] Verify grokblarg tests that posts/ exists and notifies the user otherwise.
 - [x] Determine if 'Version' in post meta-data should be simple int or semantic-version. (semantic-version)

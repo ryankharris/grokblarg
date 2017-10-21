@@ -1,10 +1,9 @@
 'use strict'
 
-const POSTS_PATH = './posts/'
-const EXAMPLE_POST_PATH = './posts/examplePost.md'
+const EXAMPLE_POST_PATH = 'examplePost.md'
 const CONFIG_PATH = './grokblarg.json'
 const PACKAGE_PATH = './package.json'
-const OUTPUT_PATH = './output/'
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const fs = require('fs')
 const path = require('path')
 const mdMeta = require('js-parse-markdown-metadata')
@@ -12,9 +11,9 @@ const marky = require('marky-markdown')
 const ENV = process.env.NODE_ENV || 'development'
 
 // 'production' exports
-exports.OUTPUT_PATH = OUTPUT_PATH
 exports.init = init
 exports.generateStaticContent = generateStaticContent
+exports.promiseToGetConfig = promiseToGetConfig
 exports.promiseToLoadVersion = promiseToLoadVersion
 exports.promiseToCreatePost = promiseToCreatePost
 exports.promiseToUpdatePost = promiseToUpdatePost
@@ -24,6 +23,8 @@ if (ENV === 'test') {
   exports.getFormattedDate = getFormattedDate
   exports.parseKeywords = parseKeywords
   exports.parseTableOfContents = parseTableOfContents
+  exports.parseDate = parseDate
+  exports.tocEntriesNewestToOldest = tocEntriesNewestToOldest
 }
 
 
@@ -31,7 +32,7 @@ if (ENV === 'test') {
 FIXME
 */
 function getFormattedDate () {
-  let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  // let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   let today = new Date()
   let d = today.getDate().toString()
   let m = months[today.getMonth()]
@@ -44,18 +45,81 @@ function getFormattedDate () {
 
 
 /**
-@desc load config file and resolve promise with it
+@desc takes a customFormatedDate and parses it into an array of numeric values, i.e. [day, month, year]
+@param {string} cd to parse
+@return {number[]} of the form [day, month, year]
+*/
+function parseDate (cd) {
+  let cdVals = []
+  // numeric day
+  cdVals.push(parseInt(cd.slice(0, 2), 10))
+
+  // numeric month
+  cdVals.push(months.indexOf(cd.slice(2, 5)))
+
+  // numeric year
+  cdVals.push(parseInt(cd.slice(5), 10))
+
+  return cdVals
+} // end parseDate
+
+
+/**
+@desc a callback for the Array.prototype.sort() method
+@param {Object} a is a tableOfContents entry
+@param {Object} b is a tableOfContents entry
+@return {number} -1 if a is older, 1 if a is newer, 0 if they are equal
+*/
+function tocEntriesNewestToOldest (a, b) {
+  let cdVals1 = parseDate(a.updated)
+  let cdVals2 = parseDate(b.updated)
+
+  // compare years
+  if (cdVals1[2] < cdVals2[2]) {
+    return 1
+  } else if (cdVals1[2] > cdVals2[2]) {
+    return -1
+  } else {
+    // compare months
+    if (cdVals1[1] < cdVals2[1]) {
+      return 1
+    } else if (cdVals1[1] > cdVals2[1]) {
+      return -1
+    } else {
+      // compare days
+      if (cdVals1[0] < cdVals2[0]) {
+        return 1
+      } else if (cdVals1[0] > cdVals2[0]) {
+        return -1
+      } else {
+        return 0
+      }
+    }
+  }
+} // end tocEntriesNewestToOldest
+
+
+/**
+@desc load or create config file and resolve promise with it
 @return {Object} promise
 */
 function promiseToGetConfig () {
-  return new Promise((resolve, reject) => {
-    fs.readFile(CONFIG_PATH, 'utf8', (err, data) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(JSON.parse(data))
+
+  function promiseToReadConfig () {
+    return new Promise((resolve, reject) => {
+      fs.readFile(CONFIG_PATH, 'utf8', (err, data) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(JSON.parse(data))
+      })
     })
-  })
+  }
+
+  return promisePathDoesNotExist(CONFIG_PATH).then(
+    promiseToCreateConfigFile,
+    promiseToReadConfig
+  )
 } // end promiseToGetConfig
 
 
@@ -79,8 +143,9 @@ function promiseToLoadVersion () {
 
 /**
 @desc an async fire-n-forget method which loads config and writes an example post into posts/
+@param {string} sourcePath to the source markdown files
 */
-function writeExamplePost () {
+function writeExamplePost (sourcePath) {
   let customDate = getFormattedDate()
 
   function success (results) {
@@ -96,18 +161,19 @@ Version: ${version}
 -->
 
 
-# Welcome to Grokblarg
+## Summary
 Grokblarg is a static-blog-site generator
 * The rest
 * is up to
 * __you!__
 `
 
-    return fs.writeFile(EXAMPLE_POST_PATH, examplePostContent, (err) => {
+    return fs.writeFile(sourcePath + EXAMPLE_POST_PATH, examplePostContent, (err) => {
       if (err) {
         console.error(err)
         return
       }
+      console.log(`Initialized source directory: ${sourcePath} with example post`)
     })
   } // end success
 
@@ -115,24 +181,24 @@ Grokblarg is a static-blog-site generator
     throw results
   } // end failure
 
-  // promiseToGetConfig().then(success, failure)
   Promise.all([promiseToGetConfig(), promiseToLoadVersion()]).then(success, failure)
 
 } // end writeExamplePost
 
 
 /**
-FIXME
+@desc create source directory if it doesn't exist
+@param {string} sourcePath to the source markdown files
 */
-function createPostsDir () {
-  fs.mkdir(POSTS_PATH, (err) => {
+function createSourceDir (sourcePath) {
+  fs.mkdir(sourcePath, (err) => {
     if (err) {
       console.error(err)
       return
     }
-    writeExamplePost()
+    writeExamplePost(sourcePath)
   })
-} // createPostsDir
+} // createSourceDir
 
 
 /**
@@ -151,22 +217,26 @@ function createOutputDir(path) {
 /**
 FIXME
 */
-function createConfigFile () {
-  let initConfig = {
-    blogName: 'My Grokblarg Blog',
-    author: 'Your Name Here'
-  }
-
-  // fileContent will include pretty spacing
-  let fileContent = JSON.stringify(initConfig, null, '\t')
-
-  fs.writeFile(CONFIG_PATH, fileContent, (err) => {
-    if (err) {
-      console.error(err)
-      return
+function promiseToCreateConfigFile () {
+  return new Promise((resolve, reject) => {
+    let initConfig = {
+      author: 'Your Name Here',
+      blogName: 'My grokblarg Blog',
+      defaultOutputPath: './output/',
+      defaultSourcePath: './posts/'
     }
+
+    // fileContent will include pretty spacing
+    let fileContent = JSON.stringify(initConfig, null, '\t')
+
+    fs.writeFile(CONFIG_PATH, fileContent, (err) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(initConfig)
+    })
   })
-} // end createConfigFile
+} // end promiseToCreateConfigFile
 
 
 /**
@@ -184,7 +254,7 @@ function createPathIfNoneExists (path, callback) {
 /**
 FIXME
 */
-function createPostFile (fileName, title, keywords) {
+function createPostFile (sourcePath, fileName, title, keywords) {
   return Promise.all([promiseToGetConfig(), promiseToLoadVersion()]).then(
     results => {
       let customDate = getFormattedDate()
@@ -200,11 +270,11 @@ Version: ${version}
 -->
 
 
-# ${title}
-your content here..._
+## Summary
+_your content here..._
 `
 
-      return fs.writeFile(POSTS_PATH + fileName, postContent, (err) => {
+      return fs.writeFile(sourcePath + fileName, postContent, (err) => {
         if (err) {
           throw err
         }
@@ -242,14 +312,14 @@ function promisePathDoesNotExist (path) {
 /**
 FIXME
 */
-function promiseToCreatePost (fileName, title, keywords) {
+function promiseToCreatePost (sourcePath, fileName, title, keywords) {
   fileName = verifyMdExtension(fileName)
-  let boundCreatPostFile = createPostFile.bind(null, fileName, title, keywords)
+  let boundCreatPostFile = createPostFile.bind(null, sourcePath, fileName, title, keywords)
 
-  return promisePathDoesNotExist(POSTS_PATH + fileName).then(
+  return promisePathDoesNotExist(sourcePath + fileName).then(
     boundCreatPostFile,
     result => {
-      return POSTS_PATH + fileName + ' already exists.'
+      return sourcePath + fileName + ' already exists.'
     }
   )
 } // end promiseToCreatePost
@@ -263,10 +333,12 @@ function promiseToUpdatePost (fileName, title, keywords) {
 } // end promiseToUpdatePost
 
 
-function init () {
-  console.log(`Initializing grokblarg`)
-  createPathIfNoneExists(POSTS_PATH, createPostsDir)
-  createPathIfNoneExists(CONFIG_PATH, createConfigFile)
+/**
+FIXME
+*/
+function init (sourcePath) {
+  let boundCreateSourceDir = createSourceDir.bind(null, sourcePath)
+  createPathIfNoneExists(sourcePath, boundCreateSourceDir)
 } // end init
 
 
@@ -289,19 +361,19 @@ function extractKeywords (metadata) {
 /**
 FIXME
 */
-function parseKeywords (keywordMap, fileName, metadata) {
+function parseKeywords (keywordMap, newFileName, metadata) {
   let keywords = extractKeywords(metadata)
 
   keywords.forEach((kw) => {
     // make a property within keywordMap if it doesn't exist
     if (!keywordMap.hasOwnProperty(kw)) {
-      keywordMap[kw] = [fileName]
+      keywordMap[kw] = [newFileName]
     }
 
-    // otherwise, search for existing fileName under the keyword property,
+    // otherwise, search for existing newFileName under the keyword property,
     // add it if it doesn't exist
-    if (keywordMap[kw].indexOf(fileName) === -1) {
-      keywordMap[kw].push(fileName)
+    if (keywordMap[kw].indexOf(newFileName) === -1) {
+      keywordMap[kw].push(newFileName)
     }
   })
 } // end parseKeywords
@@ -312,7 +384,7 @@ function parseKeywords (keywordMap, fileName, metadata) {
 @param {array} toc collection of toc-entries
 @param {Object} metadata which includes properties related to entries
 */
-function parseTableOfContents (toc, metadata) {
+function parseTableOfContents (toc, newFileName, metadata) {
   // interested in: title, updated, and maybe keywords
   if (!metadata.title) {
     throw "Missing metadata 'title'"
@@ -324,7 +396,8 @@ function parseTableOfContents (toc, metadata) {
   let entry = {
     title: metadata.title,
     updated: metadata.updated,
-    keywords: extractKeywords(metadata)
+    keywords: extractKeywords(metadata),
+    fileName: newFileName
   }
   toc.push(entry)
 } // end parseTableOfContents
@@ -342,32 +415,39 @@ function convertMarkdownToHtml (markdown) {
 
 /**
 @desc given a fileName, performs all parsing and conversion from .md to .html
+@param {string} sourcePath to the source markdown files
 @param {Object[]} toc table-of-contents entries
 @param {Object} keywordMap of keywords as keys, collection of related source-files as values
 @param {string} fileName to process
 @return {Object} promise
 */
-function parseSourceMarkdown (toc, keywordMap, targetPath, fileName) {
-  let parsed = {}
-
+function parseSourceMarkdown (sourcePath, toc, keywordMap, targetPath, fileName) {
   return new Promise((resolve, reject) => {
-    fs.readFile(POSTS_PATH + fileName, 'utf8', (err, data) => {
+    fs.readFile(sourcePath + fileName, 'utf8', (err, data) => {
       if (err) {
         // throw err
         reject(err)
       }
-      parsed = mdMeta.parse(data)
-      parseKeywords(keywordMap, fileName, parsed.metadata)
+      let newFileName = path.basename(fileName, '.md') + '.html'
+      let parsed = mdMeta.parse(data)
+      // let nav = '[Home](./index.html "Return to the index") | [Keyword](./keywords.html "Keyword filtering") | [Search](./search.html "Search for text")\n\n'
+      let nav = '[Home](./index.html "Return to the index")\n\n'
+      let title = '# ' + parsed.metadata.title + '\n\n'
+      // let timestamps = '`Created:' + parsed.metadata.created + '` | `Updated:' + parsed.metadata.updated + '`\n\n'
+      let enhancedMd = nav + title + parsed.markdown
+      // The following adds an horizontal-rule after top-left info
+      // let enhancedMd = nav + title + timestamps + '---\n\n' + parsed.markdown
+
+      parseKeywords(keywordMap, newFileName, parsed.metadata)
 
       try {
-        parseTableOfContents(toc, parsed.metadata)
+        parseTableOfContents(toc, newFileName, parsed.metadata)
       } catch (e) {
         reject(fileName + e)
       }
 
-      let html = convertMarkdownToHtml(parsed.markdown)
-      let extSep = fileName.lastIndexOf('.')
-      let newFileName = fileName.slice(0, extSep) + '.html'
+      let html = convertMarkdownToHtml(enhancedMd)
+
       fs.writeFile(targetPath + newFileName, html, (err) => {
         if (err) {
           reject(err)
@@ -381,13 +461,55 @@ function parseSourceMarkdown (toc, keywordMap, targetPath, fileName) {
 
 
 /**
+@desc takes the 10 newest posts by 'updated' date and generates the index.html page
+@param {Object[]} tenNewestEntries to include in the index.html page
+@return {Object} promise
+*/
+function promiseToGenerateIndexHtml (tenNewestEntries, targetPath) {
+  function success (result) {
+    let config = result
+    let md = '# ' + config.blogName + '\n\n'
+
+    tenNewestEntries.forEach(entry => {
+      md += `- _${entry.updated}_ [${entry.title}](./${entry.fileName} "${entry.title}")\n`
+    })
+
+    md += '\n\n'
+
+    // TODO convert md -> html
+    // write html to targetPath/index.html
+    let html = convertMarkdownToHtml(md)
+    fs.writeFile(targetPath + 'index.html', html, err => {
+      if (err) {
+        throw err
+      }
+      return true
+    })
+
+  } // end success
+
+  // return Promise.all([promiseToGetConfig(), promiseToLoadVersion()]).then(success)
+  return promiseToGetConfig().then(success)
+} // end promiseToGenerateIndexHtml
+
+
+/**
+*/
+function promiseToGenerateKeywordsHtml (keywordMap, targetPath) {
+  return new Promise((resolve, reject) => {
+
+  })
+} // end promiseToGenerateKeywordsHtml
+
+
+/**
 FIXME
 */
-function generateStaticContent (targetPath) {
+function generateStaticContent (sourcePath, targetPath) {
 
-  fs.access(POSTS_PATH, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK, (err) => {
+  fs.access(sourcePath, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK, (err) => {
     if (err) {
-      console.log(POSTS_PATH + ' does not exist. Run `grokblarg -i` to create it. Then add some posts in it.')
+      console.log(sourcePath + ' does not exist. Run `grokblarg -i` to create it. Then add some posts in it.')
       return
     }
 
@@ -396,29 +518,58 @@ function generateStaticContent (targetPath) {
 
     let tableOfContents = [] // collection of post objects
     let keywordDict = {} // key-value, keys are keywords, values are collection of related posts
-    let boundParseSourceMarkdown = parseSourceMarkdown.bind(null, tableOfContents, keywordDict, targetPath)
+    let boundParseSourceMarkdown = parseSourceMarkdown.bind(null, sourcePath, tableOfContents, keywordDict, targetPath)
     let promises = []
 
     function success (results) {
-      console.log(`Processed ${results.length} source files`)
-      console.log('keywordDict')
-      console.log(keywordDict)
-      console.log('tableOfContents')
-      console.log(tableOfContents)
+      // console.log(`Processed ${results.length} source files`)
+      // console.log('keywordDict')
+      // console.log(keywordDict)
+      // console.log('tableOfContents')
+      // console.log(tableOfContents)
+
+      // TODO generate the index.html main page static-content, write to targetPath
+      // sort toc newest->oldest inplace
+      tableOfContents.sort(tocEntriesNewestToOldest)
+      // get top 10 entries
+      // let tenNewestEntries = tableOfContents.slice(0, 10)
+      // promiseToGenerateIndexHtml(tenNewestEntries, targetPath)
+      // promiseToGenerateIndexHtml(tableOfContents, targetPath)
+      // .then(
+      //   result => {console.log('hurray!')},
+      //   result => {console.log('doh!')}
+      // )
+      // .then(promiseToGenerateKeywordsHtml)
+      // .then(promiseToGenerateSearchHtml)
+      // .catch(result => {
+      //   throw 'generateStaticContent() failed with error: ' + result
+      // })
+      let boundPromiseToGenerateIndexHtml = promiseToGenerateIndexHtml.bind(null, tableOfContents, targetPath)
+      // let boundPromiseToGenerateKeywordsHtml = promiseToGenerateKeywordsHtml.bind(null, keywordDict, targetPath)
+      // let boundPromiseToGenerateSearchHtml = promiseToGenerateSearchHtml.bind(null, ...)
+      Promise.all([boundPromiseToGenerateIndexHtml()]).then(
+        results => {
+          console.log('Success')
+        },
+        results => {
+          console.log('Failure')
+        }
+      )
+
     } // end success
 
     function failure (result) {
       throw 'generateStaticContent() failed on Promise.all() with error: ' + result
     } // end failure
 
-    fs.readdir(POSTS_PATH, (err, files) => {
+    fs.readdir(sourcePath, (err, files) => {
       if (err) {
         console.error(err)
         return
       }
 
       if (files.length === 0) {
-        console.log(POSTS_PATH + ' does not contain any posts. Exiting.')
+        console.log(sourcePath + ' does not contain any posts. Exiting.')
         return
       }
 
