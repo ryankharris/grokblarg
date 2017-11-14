@@ -10,6 +10,7 @@
 - [ ] Make use of path.sep in all path-related code to make it OS agnostic
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
 - [ ] Layout should be mobile-friendly
+- [x] update the -h help to indicate that -c makes use of the defaultSourcePath in grokblarg.json config
 - [x] Fill out README
 - [x] Add config property 'defaultSourcePath' for --source option
 - [x] Add --source option allowing user to enter a source directory path
