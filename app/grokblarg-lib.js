@@ -30,7 +30,7 @@ exports.promiseToGetConfig = promiseToGetConfig;
 exports.promiseToLoadVersion = promiseToLoadVersion;
 exports.promiseToCreatePost = promiseToCreatePost;
 exports.promiseToUpdatePost = promiseToUpdatePost;
-exports.promisePathDoesNotExist = promisePathDoesNotExist;
+exports.itExists = itExists;
 
 // additional 'test' ENV exports
 if (ENV === "test") {
@@ -345,6 +345,26 @@ function promiseToCreatePost(sourcePath, fileName, title, keywords) {
     }
   );
 } // end promiseToCreatePost
+
+/**
+@desc returns a promise intended to be consumed by async/await pattern
+@param {string} path of the file to test
+@return {Object} promise, resolved with true, rejected with false
+*/
+function itExists(path) {
+  return new Promise((resolve, reject) => {
+    fs.access(
+      path,
+      fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK,
+      err => {
+        if (err) {
+          reject(false);
+        }
+        resolve(true);
+      }
+    );
+  });
+} // itExists
 
 /**
 FIXME

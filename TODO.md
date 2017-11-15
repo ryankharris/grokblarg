@@ -1,15 +1,26 @@
 # Grokblarg TODO list
 
-- [ ] Verify that -s combined with -c emits a warning if the provide sourcePath doesn't exist
+- [ ] develop e2e testing  
+
+  NODE_ENV=test passed into e2e test execution script  
+  config created/loaded when running e2e tests
+  test/e2e/source created during e2e  
+  test/e2e/source filled with samples  
+  test/e2e/output created during e2e  
+  test/e2e/output filled with generated output  
+
+
+- [ ] refactor so that grokblarg config and the version info are only loaded once during execution
+- [ ] consider refactor of certain promise-code to use async/await in order to cleanup
+- [ ] Consolidate file-io to a few functions, to reduce # of functions with side-effects, in order to improve testability
 - [ ] Revise parseKeywords() to support info the keywords.html page needs, i.e map of post entries, not just filenames
 - [ ] Develop keywords.html page, add Keyword into top-level-nav
 - [ ] Develop search.html page, add Search into top-level-nav
-- [ ] refactor so that grokblarg config and the version info are only loaded once during execution
 - [ ] Add -u refresh 'updated' date metadata for a post. Pull defaults from config
-- [ ] Consolidate file-io to a few functions, to reduce side-effects, in order to improve testability
 - [ ] Make use of path.sep in all path-related code to make it OS agnostic
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
 - [ ] Layout should be mobile-friendly
+- [x] Verify that -s combined with -c emits a warning if the provide sourcePath doesn't exist
 - [x] update the -h help to indicate that -c makes use of the defaultSourcePath in grokblarg.json config
 - [x] Fill out README
 - [x] Add config property 'defaultSourcePath' for --source option

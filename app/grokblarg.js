@@ -67,10 +67,7 @@ Promise.all([gbLib.promiseToGetConfig(), gbLib.promiseToLoadVersion()]).then(
         "-c --create <filename>",
         `Creates a new post within source directory, defined in grokblarg.json config`
       )
-      .option(
-        "-i --init",
-        `Initializes source directory and grokblarg.json config`
-      )
+      .option("-i --init", `Initializes source directory`)
       .option(
         "-k --keywords <words>",
         `Used with --create and --update commands to add/update keywords metadata`,

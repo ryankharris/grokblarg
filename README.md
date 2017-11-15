@@ -6,7 +6,7 @@ The intent of the author is to use the generated content with github pages, simi
 
 ## Basic usage
 
-Install Node.js configure on your PATH.
+Install Node.js (8.X LTS), configure on your PATH.
 
 Clone or download grokblarg. Within the cloned folder, run:
 
@@ -128,4 +128,3 @@ Feel free to alter your title, updated date, and add keywords as you wish. New m
 `npm t -s`  
 `npm run jasmine test/unit/*`  
 `npm run jasmine test/unit/<file-name>`  
-
