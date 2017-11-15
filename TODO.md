@@ -9,8 +9,6 @@
   test/e2e/output created during e2e  
   test/e2e/output filled with generated output  
 
-
-- [ ] refactor so that grokblarg config and the version info are only loaded once during execution
 - [ ] consider refactor of certain promise-code to use async/await in order to cleanup
 - [ ] Consolidate file-io to a few functions, to reduce # of functions with side-effects, in order to improve testability
 - [ ] Revise parseKeywords() to support info the keywords.html page needs, i.e map of post entries, not just filenames
@@ -21,6 +19,7 @@
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
 - [ ] Internationalize: break language specific string-templates out. Add config option for language.
 - [ ] Layout should be mobile-friendly
+- [x] refactor so that grokblarg config and the version info are only loaded once during execution
 - [x] Verify that -s combined with -c emits a warning if the provide sourcePath doesn't exist
 - [x] update the -h help to indicate that -c makes use of the defaultSourcePath in grokblarg.json config
 - [x] Fill out README
