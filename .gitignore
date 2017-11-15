@@ -59,6 +59,7 @@ typings/
 
 # posts directory where user places their source markdown
 /posts
+/samples
 
 # scratch directory where I want to throw stuff locally that I never want in the repo
 /scratch
@@ -68,4 +69,3 @@ grokblarg.json
 
 # output (default) directory where grokblarg puts generated static content
 /output
-

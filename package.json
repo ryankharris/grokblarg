@@ -1,11 +1,11 @@
 {
   "name": "grokblarg",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Grokblarg is a static-blog-site generator",
   "main": "app/grokblarg.js",
   "scripts": {
-    "jasmine": "jasmine",
-    "jasmine-config": "jasmine JASMINE_CONFIG_PATH=test/unit/jasmine.json",
+    "build": "npm run do-prettier && npm run test",
+    "do-prettier": "prettier --write ./app/*.js ./lib/*.js ./test/unit/*-spec.js",
     "start": "node ./app/grokblarg.js",
     "test": "NODE_ENV=test jasmine JASMINE_CONFIG_PATH=test/unit/jasmine.json"
   },
@@ -24,11 +24,12 @@
   },
   "homepage": "https://github.com/ryankharris/grokblarg#readme",
   "devDependencies": {
-    "jasmine": "^2.7.0"
+    "jasmine": "^2.7.0",
+    "prettier": "^1.8.2"
   },
   "dependencies": {
-    "commander": "^2.11.0",
-    "js-parse-markdown-metadata": "^1.0.1",
-    "marky-markdown": "^11.3.2"
+    "commander": "2.11.0",
+    "js-parse-markdown-metadata": "1.0.4",
+    "marky-markdown": "11.3.2"
   }
 }
