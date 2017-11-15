@@ -19,6 +19,7 @@
 - [ ] Add -u refresh 'updated' date metadata for a post. Pull defaults from config
 - [ ] Make use of path.sep in all path-related code to make it OS agnostic
 - [ ] Live samples should be injectable with HTML/CSS/JavaScript demos.
+- [ ] Internationalize: break language specific string-templates out. Add config option for language.
 - [ ] Layout should be mobile-friendly
 - [x] Verify that -s combined with -c emits a warning if the provide sourcePath doesn't exist
 - [x] update the -h help to indicate that -c makes use of the defaultSourcePath in grokblarg.json config

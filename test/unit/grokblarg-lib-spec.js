@@ -1,6 +1,6 @@
 "use strict";
 
-const gbLib = require("../../app/grokblarg-lib");
+const gbLib = require("../../lib/grokblarg-lib");
 
 describe("grokblarg-lib", function() {
   it("should parseKeywords", function() {

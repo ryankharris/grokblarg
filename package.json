@@ -1,11 +1,11 @@
 {
   "name": "grokblarg",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Grokblarg is a static-blog-site generator",
   "main": "app/grokblarg.js",
   "scripts": {
     "build": "npm run do-prettier && npm run test",
-    "do-prettier": "prettier --write ./app/*.js ./test/unit/*-spec.js",
+    "do-prettier": "prettier --write ./app/*.js ./lib/*.js ./test/unit/*-spec.js",
     "start": "node ./app/grokblarg.js",
     "test": "NODE_ENV=test jasmine JASMINE_CONFIG_PATH=test/unit/jasmine.json"
   },
